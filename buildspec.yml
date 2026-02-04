@@ -1,0 +1,19 @@
+phases:
+  install:
+    # Commands to run during the install phase, e.g., install dependencies
+    # For standard images, the Docker daemon is already running (or can be enabled via Docker server config)
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - ECR_URI=905355901370.dkr.ecr.us-east-2.amazonaws.com/aiaaghs/selenium
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin $ECR_URI
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $ECR_URI:latest .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $ECR_URI:latest
